@@ -138,7 +138,7 @@ struct RouterDebugModifier: ViewModifier {
                         }) {
                             Image(systemName: "hammer")
                                 .font(.system(size: 22, weight: .bold))
-                                .foregroundColor(.white)
+                                .foregroundColor(.black)
                                 .frame(width: 60, height: 60)
                                 .background(Color(hex: "#B6FB2D"))
                                 .clipShape(Circle())
