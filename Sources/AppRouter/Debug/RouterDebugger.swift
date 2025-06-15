@@ -160,12 +160,12 @@ struct RouterDebugModifier: ViewModifier {
     
     private func registerRouterDebugIfNeeded() {
         // Verificação correta com tipo explícito
-        if let _: Router<RouterDebugRoute> = appRouter.router(forKey: "routerDebug") {
+        if let _: Router<RouterDebugRoute> = appRouter.router() {
             // Router já está registrado, não precisamos fazer nada
             print("📡 Debug router already registered")
         } else {
             // Router não está registrado, vamos criar um novo
-            let routerDebug = Router<RouterDebugRoute>("routerDebug")
+            let routerDebug = Router<RouterDebugRoute>()
             appRouter.register(routerDebug)
             print("📡 Debug router automatically registered")
         }

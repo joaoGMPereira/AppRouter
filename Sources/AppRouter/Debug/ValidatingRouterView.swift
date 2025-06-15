@@ -5,7 +5,7 @@ struct ValidatingRouterView: View {
     @Environment(AppRouter.self) private var appRouter
     @State private var logMessages: [String] = []
     @State private var showRoutersList: Bool = false
-    let id = "routerDebug"
+    let id = String(describing: RouterDebugRoute.self)
     var body: some View {
         if let routerDebug: Router<RouterDebugRoute> = appRouter.router(forKey: id) {
             // Usamos o RoutingView para gerenciar a navegação

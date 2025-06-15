@@ -7,7 +7,11 @@
 import SwiftUI
 
 @Observable
-public final class TabRouter<Routes: TabRoutable>: TabRoutableObject {
+public final class TabRouter<Routes: TabRoutable>: @preconcurrency TabRoutableObject {
+    public static var key: String {
+        Routes.key
+    }
+    
     public typealias Destination = Routes
 
     public var selectedTab: Routes

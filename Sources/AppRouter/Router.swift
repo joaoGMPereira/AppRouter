@@ -8,7 +8,11 @@ public enum PresentationType {
 }
 
 @Observable
-public final class Router<Routes: Routable>: RoutableObject {
+@MainActor
+public final class Router<Routes: Routable>: @preconcurrency RoutableObject {
+    public static var key: String {
+        Routes.key
+    }
     public typealias Destination = Routes
 
     // Navegação em pilha
@@ -28,6 +32,7 @@ public final class Router<Routes: Routable>: RoutableObject {
     }
 }
 
+@MainActor
 public protocol Routable: View & Hashable & Identifiable {
     static var key: String { get }
     var id: String { get }

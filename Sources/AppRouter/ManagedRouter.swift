@@ -1,9 +1,9 @@
 import SwiftUI
 
 /// Protocolo que define a funcionalidade básica de um router para ser gerenciado pelo AppRouter
+@MainActor
 public protocol ManagedRouter: AnyObject {
-    /// Limpa todas as rotas e retorna ao estado inicial.
-    func reset()
+    static var key: String { get }
     
     var id: String { get }
     
@@ -11,6 +11,9 @@ public protocol ManagedRouter: AnyObject {
     var isPresenting: Bool { get }
     
     var dismiss: ((_ routerId: String) -> Void)? { get set }
+    
+    /// Limpa todas as rotas e retorna ao estado inicial.
+    func reset()
 }
 
 /// Extensão para permitir que Router<T> seja gerenciado pelo AppRouter

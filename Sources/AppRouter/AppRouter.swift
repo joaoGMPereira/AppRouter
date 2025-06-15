@@ -3,6 +3,7 @@ import SwiftUI
 /// O AppRouter é responsável por centralizar todos os routers do aplicativo,
 /// permitindo um gerenciamento global da navegação e do estado.
 @Observable
+@MainActor
 public final class AppRouter {
     // Armazena todos os routers registrados por tipo
     var routers: [String: ManagedRouter] = [:]
@@ -12,6 +13,7 @@ public final class AppRouter {
     private(set) var mainBaseRouters: [ManagedRouter]
     
     /// Inicializa uma nova instância do AppRouter.
+
     public init(
         tabRouter: ManagedRouter,
         baseRouters: [ManagedRouter]
@@ -46,8 +48,8 @@ public final class AppRouter {
     /// Recupera um router previamente registrado.
     /// - Parameter key: A chave do router.
     /// - Returns: O router, se existir, ou nil caso contrário.
-    public func router<T: ManagedRouter>(forKey key: String) -> T? {
-        return routers[key] as? T
+    public func router<T: ManagedRouter>(forKey customKey: String? = nil) -> T? {
+        return routers[customKey ?? T.key] as? T
     }
     
     /// Retorna o router de tabs com o tipo específico
@@ -62,7 +64,6 @@ public final class AppRouter {
     }
     
     /// Retorna um router base específico pelo índice
-    @MainActor
     public func baseRouter<Route: Routable>(forKey customKey: String? = nil) -> Router<Route>? {
         return mainBaseRouters.first(where: { $0.id == customKey ?? Route.key }) as? Router<Route>
     }
@@ -110,11 +111,5 @@ public final class AppRouter {
             return router.isPresenting
         }
         return false
-    }
-}
-
-extension AppRouter {
-    var permanentRouters: [String] {
-        ["tabRouter", "workoutPlanRouter", "routerDebug"]
     }
 }

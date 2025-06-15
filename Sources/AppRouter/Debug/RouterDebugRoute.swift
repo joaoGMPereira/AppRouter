@@ -79,130 +79,131 @@ struct InlineFeatureView: View {
                         endPoint: .bottomTrailing
                     )
                     .ignoresSafeArea()
-                    
-                    VStack(spacing: 20) {
-                        // Header com informações da feature
-                        Text(type.rawValue)
-                            .font(.largeTitle)
-                            .fontWeight(.bold)
-                            .foregroundColor(.white)
-                            .padding(.top, 30)
-                        
-                        Text("ID: \(id) • Level: \(level)")
-                            .font(.headline)
-                            .foregroundColor(.white.opacity(0.9))
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 8)
-                            .background(Color.black.opacity(0.2))
-                            .cornerRadius(20)
-                        
-                        // Ações de Navegação
-                        VStack(spacing: 14) {
-                            // Navegação para o próximo nível dentro da mesma feature
-                            Button("Push to Next Level") {
-                                switch type {
-                                case .featureA:
-                                    routerDebug.navigate(
-                                        to: .featureA(
-                                            id: id,
-                                            previousId: previousId,
-                                            level: level + 1
-                                        )
-                                    )
-                                case .featureB:
-                                    routerDebug.navigate(
-                                        to: .featureB(
-                                            id: id,
-                                            previousId: previousId,
-                                            level: level + 1
-                                        )
-                                    )
-                                }
-                            }
-                            .buttonStyle(FeatureButtonStyle(type: type, isPrimary: true))
-                            .disabled(level >= 5) // Limitamos a 5 níveis de profundidade
+                    ScrollView {
+                        VStack(spacing: 20) {
+                            // Header com informações da feature
+                            Text(type.rawValue)
+                                .font(.largeTitle)
+                                .fontWeight(.bold)
+                                .foregroundColor(.white)
+                                .padding(.top, 30)
                             
-                            if level > 1 {
-                                // Navegação para voltar ao nível anterior
-                                Button("Pop to Previous Level") {
-                                    routerDebug.navigateBack()
+                            Text("ID: \(id) • Level: \(level)")
+                                .font(.headline)
+                                .foregroundColor(.white.opacity(0.9))
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 8)
+                                .background(Color.black.opacity(0.2))
+                                .cornerRadius(20)
+                            
+                            // Ações de Navegação
+                            VStack(spacing: 14) {
+                                // Navegação para o próximo nível dentro da mesma feature
+                                Button("Push to Next Level") {
+                                    switch type {
+                                    case .featureA:
+                                        routerDebug.navigate(
+                                            to: .featureA(
+                                                id: id,
+                                                previousId: previousId,
+                                                level: level + 1
+                                            )
+                                        )
+                                    case .featureB:
+                                        routerDebug.navigate(
+                                            to: .featureB(
+                                                id: id,
+                                                previousId: previousId,
+                                                level: level + 1
+                                            )
+                                        )
+                                    }
+                                }
+                                .buttonStyle(FeatureButtonStyle(type: type, isPrimary: true))
+                                .disabled(level >= 5) // Limitamos a 5 níveis de profundidade
+                                
+                                if level > 1 {
+                                    // Navegação para voltar ao nível anterior
+                                    Button("Pop to Previous Level") {
+                                        routerDebug.navigateBack()
+                                    }
+                                    .buttonStyle(FeatureButtonStyle(type: type, isPrimary: false))
+                                }
+                                
+                                // Navegar para a raiz da stack atual
+                                Button("Pop to Root") {
+                                    if let previousRouter: Router<RouterDebugRoute> = appRouter.router(forKey: previousId) {
+                                        previousRouter.dismissPresented()
+                                    }
                                 }
                                 .buttonStyle(FeatureButtonStyle(type: type, isPrimary: false))
-                            }
-                            
-                            // Navegar para a raiz da stack atual
-                            Button("Pop to Root") {
-                                if let previousRouter: Router<RouterDebugRoute> = appRouter.router(forKey: previousId) {
-                                    previousRouter.dismissPresented()
-                                }
-                            }
-                            .buttonStyle(FeatureButtonStyle(type: type, isPrimary: false))
-                            .disabled(level <= 1)
-                            
-                            Divider()
-                                .background(Color.white.opacity(0.3))
-                                .padding(.vertical, 8)
-                            
-                            // Apresentar a outra feature como sheet
-                            Button("Present \(type == .featureA ? "Feature B" : "Feature A") as Sheet") {
-                                let featureId = "routerFeature\(type == .featureA ? "B" : "A")-\(UUID().uuidString.prefix(4).description)"
-                                let routerNewFeature = Router<RouterDebugRoute>(featureId)
+                                .disabled(level <= 1)
                                 
-                                appRouter.register(routerNewFeature)
-                                switch type {
-                                case .featureA:
-                                    routerDebug.present(
-                                        sheet: .featureB(
-                                            id: featureId,
-                                            previousId: id,
-                                            level: 1
+                                Divider()
+                                    .background(Color.white.opacity(0.3))
+                                    .padding(.vertical, 8)
+                                
+                                // Apresentar a outra feature como sheet
+                                Button("Present \(type == .featureA ? "Feature B" : "Feature A") as Sheet") {
+                                    let featureId = "routerFeature\(type == .featureA ? "B" : "A")-\(UUID().uuidString.prefix(4).description)"
+                                    let routerNewFeature = Router<RouterDebugRoute>(featureId)
+                                    
+                                    appRouter.register(routerNewFeature)
+                                    switch type {
+                                    case .featureA:
+                                        routerDebug.present(
+                                            sheet: .featureB(
+                                                id: featureId,
+                                                previousId: id,
+                                                level: 1
+                                            )
                                         )
-                                    )
-                                case .featureB:
-                                    routerDebug.present(
-                                        sheet: .featureA(
-                                            id: featureId,
-                                            previousId: id,
-                                            level: 1
+                                    case .featureB:
+                                        routerDebug.present(
+                                            sheet: .featureA(
+                                                id: featureId,
+                                                previousId: id,
+                                                level: 1
+                                            )
                                         )
-                                    )
+                                    }
                                 }
-                            }
-                            .buttonStyle(FeatureButtonStyle(type: type == .featureA ? .featureB : .featureA, isPrimary: true))
-                            
-                            // Dismiss sheet atual
-                            Button("Dismiss Current Sheet") {
-                                if let previousRouter: Router<RouterDebugRoute> = appRouter.router(forKey: previousId) {
-                                    previousRouter.dismissPresented()
+                                .buttonStyle(FeatureButtonStyle(type: type == .featureA ? .featureB : .featureA, isPrimary: true))
+                                
+                                // Dismiss sheet atual
+                                Button("Dismiss Current Sheet") {
+                                    if let previousRouter: Router<RouterDebugRoute> = appRouter.router(forKey: previousId) {
+                                        previousRouter.dismissPresented()
+                                    }
                                 }
+                                .buttonStyle(FeatureButtonStyle(type: type, isPrimary: false, isDestructive: true))
+                                
+                                // Botão para mostrar/esconder lista de routers
+                                Button("Show Registered Routers") {
+                                    showRoutersList.toggle()
+                                }
+                                .buttonStyle(FeatureButtonStyle(type: type, isPrimary: true))
                             }
-                            .buttonStyle(FeatureButtonStyle(type: type, isPrimary: false, isDestructive: true))
+                            .padding(.horizontal, 40)
+                            .padding(.top, 20)
                             
-                            // Botão para mostrar/esconder lista de routers
-                            Button("Show Registered Routers") {
-                                showRoutersList.toggle()
+                            // List of registered routers (only shown when showRoutersList is true)
+                            if showRoutersList {
+                                RegisteredRoutersListView(
+                                    id: id,
+                                    backgroundColor: Color.black.opacity(0.2),
+                                    titleColor: .white,
+                                    maxHeight: 150
+                                )
+                                .padding(.horizontal, 20)
+                                .transition(.move(edge: .bottom).combined(with: .opacity))
+                                .animation(.easeInOut, value: showRoutersList)
                             }
-                            .buttonStyle(FeatureButtonStyle(type: type, isPrimary: true))
+                            
+                            Spacer()
                         }
-                        .padding(.horizontal, 40)
-                        .padding(.top, 20)
-                        
-                        // List of registered routers (only shown when showRoutersList is true)
-                        if showRoutersList {
-                            RegisteredRoutersListView(
-                                id: id,
-                                backgroundColor: Color.black.opacity(0.2),
-                                titleColor: .white,
-                                maxHeight: 150
-                            )
-                            .padding(.horizontal, 20)
-                            .transition(.move(edge: .bottom).combined(with: .opacity))
-                            .animation(.easeInOut, value: showRoutersList)
-                        }
-                        
-                        Spacer()
+                        .padding()
                     }
-                    .padding()
                 }
                 .navigationBarBackButtonHidden(true)
                 .toolbar {
