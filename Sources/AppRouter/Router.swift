@@ -22,11 +22,13 @@ public final class Router<Routes: Routable>: RoutableObject {
     
     public var dismiss: ((_ routerId: String) -> Void)?
 
-    public init(_ id: String) {
-        self.id = id
+    @MainActor
+    public init(_ customId: String? = nil) {
+        self.id = customId ?? Routes.key
     }
 }
 
 public protocol Routable: View & Hashable & Identifiable {
+    static var key: String { get }
     var id: String { get }
 }

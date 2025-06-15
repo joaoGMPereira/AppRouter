@@ -62,8 +62,9 @@ public final class AppRouter {
     }
     
     /// Retorna um router base específico pelo índice
-    public func baseRouter<Route: Routable>(forKey key: String) -> Router<Route>? {
-        return mainBaseRouters.first(where: { $0.id == key }) as? Router<Route>
+    @MainActor
+    public func baseRouter<Route: Routable>(forKey customKey: String? = nil) -> Router<Route>? {
+        return mainBaseRouters.first(where: { $0.id == customKey ?? Route.key }) as? Router<Route>
     }
     
     /// Retorna todos os routers base com o tipo específico

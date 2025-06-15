@@ -61,18 +61,18 @@ struct RouterDebugDashboard: View {
                 // Ferramentas de Teste
                 ValidatingRouterView()
                     .tag(0)
-                VStack {
-                    NavigationVisualizer()
-                    
-                    if let selectedRouter = selectedRouter {
-                        RouterHistoryView(routerKey: selectedRouter)
-                    }
-                }
-                .tag(1)
-                
-                // Analisador de Router
-                RouterAnalyzerView()
-                    .tag(2)
+//                VStack {
+//                    NavigationVisualizer()
+//                    
+//                    if let selectedRouter = selectedRouter {
+//                        RouterHistoryView(routerKey: selectedRouter)
+//                    }
+//                }
+//                .tag(1)
+//                
+//                // Analisador de Router
+//                RouterAnalyzerView()
+//                    .tag(2)
                 
                 // Log de Navegação
                 navigationLogView

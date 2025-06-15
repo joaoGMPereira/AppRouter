@@ -16,9 +16,9 @@ public final class TabRouter<Routes: TabRoutable>: TabRoutableObject {
     
     public var dismiss: ((_ routerId: String) -> Void)?
 
-    public init(selectedTab: Routes, id: String) {
+    public init(selectedTab: Routes, _ customId: String? = nil) {
         self.selectedTab = selectedTab
-        self.id = id
+        self.id = customId ?? Routes.key
     }
 }
 
@@ -32,4 +32,6 @@ public protocol TabRoutableObject: AnyObject {
     var selectedTab: Destination { get set }
 }
 
-public typealias TabRoutable = Hashable
+public protocol TabRoutable: Hashable {
+    static var key: String { get }
+}

@@ -2,7 +2,7 @@ import SwiftUI
 
 /// Rotas específicas para as funcionalidades de debug do router
 public enum RouterDebugRoute: @preconcurrency Routable {
-    
+    public static let key = String(describing: Self.self)
     public var id: String {
         switch self {
         case .featureA(let id, let previousId, let level):
