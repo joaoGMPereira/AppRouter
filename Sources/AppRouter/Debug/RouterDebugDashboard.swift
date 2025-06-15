@@ -1,13 +1,15 @@
 import SwiftUI
 
 /// Painel principal que reúne todas as ferramentas de debug do router
-struct RouterDebugDashboard: View {
+public struct RouterDebugDashboard: View {
     @Environment(AppRouter.self) private var appRouter
     @State private var debugger = RouterDebugger.shared
     @State private var selectedTab = 0
     @State private var selectedRouter: String? = nil
     
-    var body: some View {
+    public init() {}
+    
+    public var body: some View {
         VStack(spacing: 0) {
             // Header com logo e controles
             HStack {

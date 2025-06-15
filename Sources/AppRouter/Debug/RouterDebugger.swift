@@ -4,15 +4,15 @@ import Observation
 /// Classe singleton que fornece acesso centralizado à ferramenta de debug do router
 /// a partir de qualquer parte do aplicativo.
 @Observable
-final class RouterDebugger {
+public final class RouterDebugger {
     /// Instância compartilhada do RouterDebugger
-    @MainActor static let shared = RouterDebugger()
+    @MainActor public static let shared = RouterDebugger()
     
     /// Flag que controla a apresentação da view de debug
-    var showingDebugView = false
+    public var showingDebugView = false
     
     /// Flag que indica se o botão flutuante deve ser mostrado
-    var showFloatingButton = false
+    public var showFloatingButton = false
     
     /// Lista de logs de navegação para análise
     var navigationLogs: [NavigationLogEntry] = []
@@ -21,12 +21,12 @@ final class RouterDebugger {
     private init() {}
     
     /// Ativa o modo de debug do router
-    func enableDebug() {
+    public func enableDebug() {
         showFloatingButton = true
     }
     
     /// Desativa o modo de debug do router
-    func disableDebug() {
+    public func disableDebug() {
         showFloatingButton = false
         showingDebugView = false
     }
@@ -133,7 +133,6 @@ struct RouterDebugModifier: ViewModifier {
                         Spacer()
                         Button(action: {
                             // Registra o router de debug se necessário
-                            registerRouterDebugIfNeeded()
                             debugger.showingDebugView = true
                         }) {
                             Image(systemName: "hammer")
@@ -157,17 +156,37 @@ struct RouterDebugModifier: ViewModifier {
             }
         }
     }
+}
+
+
+public struct RouterDebugView: View {
+    @State private var debugger = RouterDebugger.shared
+
+    public init() {}
     
-    private func registerRouterDebugIfNeeded() {
-        // Verificação correta com tipo explícito
-        if let _: Router<RouterDebugRoute> = appRouter.router() {
-            // Router já está registrado, não precisamos fazer nada
-            print("📡 Debug router already registered")
-        } else {
-            // Router não está registrado, vamos criar um novo
-            let routerDebug = Router<RouterDebugRoute>()
-            appRouter.register(routerDebug)
-            print("📡 Debug router automatically registered")
+    public var body: some View {
+        if debugger.showFloatingButton {
+            VStack {
+                Spacer()
+                HStack {
+                    Spacer()
+                    Button(action: {
+                        // Registra o router de debug se necessário
+                        debugger.showingDebugView = true
+                    }) {
+                        Image(systemName: "hammer")
+                            .font(.system(size: 22, weight: .bold))
+                            .foregroundColor(.black)
+                            .frame(width: 60, height: 60)
+                            .background(Color(hex: "#B6FB2D"))
+                            .clipShape(Circle())
+                            .shadow(color: Color.black.opacity(0.3), radius: 5, x: 0, y: 3)
+                    }
+                    .padding(.trailing, 24)
+                    .padding(.bottom, 40)
+                    .opacity(0.9)
+                }
+            }
         }
     }
 }
