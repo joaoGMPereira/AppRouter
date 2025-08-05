@@ -8,29 +8,12 @@ public final class RouterDebugger {
     /// Instância compartilhada do RouterDebugger
     @MainActor public static let shared = RouterDebugger()
     
-    /// Flag que controla a apresentação da view de debug
-    public var showingDebugView = false
-    
-    /// Flag que indica se o botão flutuante deve ser mostrado
-    public var showFloatingButton = false
-    
     /// Lista de logs de navegação para análise
     var navigationLogs: [NavigationLogEntry] = []
     
     /// Construtor privado para garantir o padrão singleton
     private init() {}
-    
-    /// Ativa o modo de debug do router
-    public func enableDebug() {
-        showFloatingButton = true
-    }
-    
-    /// Desativa o modo de debug do router
-    public func disableDebug() {
-        showFloatingButton = false
-        showingDebugView = false
-    }
-    
+
     /// Adiciona uma entrada ao log de navegação
     func addNavigationLog(type: NavigationLogType, message: String, routerId: String) {
         let entry = NavigationLogEntry(
@@ -115,101 +98,6 @@ struct NavigationLogEntry: Identifiable {
         formatter.dateFormat = "HH:mm:ss.SSS"
         return formatter.string(from: timestamp)
     }
-}
-
-/// View modificador que adiciona o botão flutuante de debug à view
-struct RouterDebugModifier: ViewModifier {
-    @State private var debugger = RouterDebugger.shared
-    @Environment(AppRouter.self) private var appRouter
-    
-    func body(content: Content) -> some View {
-        ZStack {
-            content
-            
-            if debugger.showFloatingButton {
-                VStack {
-                    Spacer()
-                    HStack {
-                        Spacer()
-                        Button(action: {
-                            // Registra o router de debug se necessário
-                            debugger.showingDebugView = true
-                        }) {
-                            Image(systemName: "hammer")
-                                .font(.system(size: 22, weight: .bold))
-                                .foregroundColor(.black)
-                                .frame(width: 60, height: 60)
-                                .background(Color(hex: "#B6FB2D"))
-                                .clipShape(Circle())
-                                .shadow(color: Color.black.opacity(0.3), radius: 5, x: 0, y: 3)
-                        }
-                        .padding(.trailing, 24)
-                        .padding(.bottom, 40)
-                        .opacity(0.9)
-                    }
-                }
-                .sheet(isPresented: $debugger.showingDebugView) {
-                    NavigationView {
-                        RouterDebugDashboard()
-                    }
-                }
-            }
-        }
-    }
-}
-
-
-public struct RouterDebugView: View {
-    @State private var debugger = RouterDebugger.shared
-
-    public init() {}
-    
-    public var body: some View {
-        if debugger.showFloatingButton {
-            VStack {
-                Spacer()
-                HStack {
-                    Spacer()
-                    Button(action: {
-                        // Registra o router de debug se necessário
-                        debugger.showingDebugView = true
-                    }) {
-                        Image(systemName: "hammer")
-                            .font(.system(size: 22, weight: .bold))
-                            .foregroundColor(.black)
-                            .frame(width: 60, height: 60)
-                            .background(Color(hex: "#B6FB2D"))
-                            .clipShape(Circle())
-                            .shadow(color: Color.black.opacity(0.3), radius: 5, x: 0, y: 3)
-                    }
-                    .padding(.trailing, 24)
-                    .padding(.bottom, 40)
-                    .opacity(0.9)
-                }
-            }
-        }
-    }
-}
-
-/// Extensão para facilitar a aplicação do modificador de debug
-public extension View {
-    /// Adiciona o botão flutuante de debug à view
-    func withRouterDebug() -> some View {
-        self.modifier(RouterDebugModifier())
-    }
-}
-
-/// Comando para ativar o botão flutuante de debug a partir do console
-@MainActor public func enableRouterDebug() {
-    RouterDebugger.shared.enableDebug()
-    print("📡 Router Debug enabled! A floating button will appear in the interface.")
-    print("   To disable, run: disableRouterDebug()")
-}
-
-/// Comando para desativar o botão flutuante de debug a partir do console
-@MainActor public func disableRouterDebug() {
-    RouterDebugger.shared.disableDebug()
-    print("📡 Router Debug disabled!")
 }
 
 extension Color {

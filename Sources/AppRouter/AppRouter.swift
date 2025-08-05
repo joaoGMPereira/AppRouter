@@ -12,6 +12,8 @@ public final class AppRouter {
     private(set) var mainTabRouter: ManagedRouter
     private(set) var mainBaseRouters: [ManagedRouter]
     
+    public var presentedRouters: [(any RoutableObject)] = []
+    
     /// Inicializa uma nova instância do AppRouter.
 
     public init(
@@ -32,7 +34,10 @@ public final class AppRouter {
     ///   - router: O router a ser registrado.
     ///   - key: A chave única para identificar este router.
     public func register<T: ManagedRouter>(_ router: T) {
-        router.dismiss = { [weak self] dismissedRouterId in
+        if let routableObject = router as? (any RoutableObject) {
+            routableObject.appRouter = self
+        }
+        router.dismissCallback = { [weak self] dismissedRouterId in
                 self?.unregister(key: dismissedRouterId)
         }
         routers[router.id] = router
@@ -111,5 +116,11 @@ public final class AppRouter {
             return router.isPresenting
         }
         return false
+    }
+    
+    public func dismissTop() {
+        presentedRouters.last?.dismissPresented()
+        _ = presentedRouters.dropLast()
+        print(presentedRouters)
     }
 }

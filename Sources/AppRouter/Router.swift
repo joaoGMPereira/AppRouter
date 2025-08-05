@@ -10,6 +10,8 @@ public enum PresentationType {
 @Observable
 @MainActor
 public final class Router<Routes: Routable>: @preconcurrency RoutableObject {
+    public weak var appRouter: AppRouter?
+    
     public static var key: String {
         Routes.key
     }
@@ -24,7 +26,7 @@ public final class Router<Routes: Routable>: @preconcurrency RoutableObject {
     
     public let id: String
     
-    public var dismiss: ((_ routerId: String) -> Void)?
+    public var dismissCallback: ((_ routerId: String) -> Void)?
 
     @MainActor
     public init(_ customId: String? = nil) {
@@ -35,5 +37,5 @@ public final class Router<Routes: Routable>: @preconcurrency RoutableObject {
 @MainActor
 public protocol Routable: View & Hashable & Identifiable {
     static var key: String { get }
-    var id: String { get }
+    nonisolated var id: String { get }
 }

@@ -18,7 +18,7 @@ public final class TabRouter<Routes: TabRoutable>: @preconcurrency TabRoutableOb
     
     public let id: String
     
-    public var dismiss: ((_ routerId: String) -> Void)?
+    public var dismissCallback: ((_ routerId: String) -> Void)?
 
     public init(selectedTab: Routes, _ customId: String? = nil) {
         self.selectedTab = selectedTab

@@ -22,14 +22,6 @@ public struct RouterDebugDashboard: View {
                     .foregroundColor(.white)
                 
                 Spacer()
-                
-                Button(action: {
-                    debugger.showingDebugView = false
-                }) {
-                    Image(systemName: "xmark.circle.fill")
-                        .font(.system(size: 20))
-                        .foregroundColor(.white.opacity(0.8))
-                }
             }
             .padding()
             .background(Color.black)

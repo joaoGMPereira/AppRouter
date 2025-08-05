@@ -54,14 +54,14 @@ public struct RoutingView<Root: View, Routes: Routable>: View {
         .onChange(of: presentingSheet) { oldValue, newValue in
             if newValue == nil {
                 if let routable = oldValue {
-                    router.dismiss?(routable.id)
+                    router.dismissCallback?(routable.id)
                 }
             }
         }
         .onChange(of: presentingFullScreen) { oldValue, newValue in
             if newValue == nil {
                 if let routable = oldValue {
-                    router.dismiss?(routable.id)
+                    router.dismissCallback?(routable.id)
                 }
             }
         }

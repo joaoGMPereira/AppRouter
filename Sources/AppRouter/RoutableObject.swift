@@ -3,6 +3,8 @@ import SwiftUI
 public protocol RoutableObject: AnyObject {
     /// The type of the destination views in the navigation stack. Must conform to `Routable`.
     associatedtype Destination: Routable
+    
+    var appRouter: AppRouter? { get set }
 
     /// An array representing the current navigation stack of destinations.
     /// Modifying this stack updates the navigation state of the application.
@@ -92,12 +94,16 @@ extension RoutableObject {
         stack = destinations
     }
     
+    @MainActor
     public func present(sheet destination: Destination) {
         presentingSheet = destination
+        appRouter?.presentedRouters.append(self)
     }
     
+    @MainActor
     public func present(fullScreen destination: Destination) {
         presentingFullScreen = destination
+        appRouter?.presentedRouters.append(self)
     }
     
     public func dismissPresented() {

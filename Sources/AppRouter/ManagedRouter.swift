@@ -10,10 +10,11 @@ public protocol ManagedRouter: AnyObject {
     /// Verifica se o router está apresentando algum conteúdo.
     var isPresenting: Bool { get }
     
-    var dismiss: ((_ routerId: String) -> Void)? { get set }
+    var dismissCallback: ((_ routerId: String) -> Void)? { get set }
     
     /// Limpa todas as rotas e retorna ao estado inicial.
     func reset()
+    func dismiss()
 }
 
 /// Extensão para permitir que Router<T> seja gerenciado pelo AppRouter
@@ -23,6 +24,11 @@ extension Router: ManagedRouter {
         dismissPresented()
     }
     
+    public func dismiss() {
+        navigateToRoot()
+        dismissCallback?(id)
+    }
+    
     public var isPresenting: Bool {
         presentingSheet != nil || presentingFullScreen != nil || !stack.isEmpty
     }
@@ -30,12 +36,12 @@ extension Router: ManagedRouter {
 
 /// Extensão para permitir que TabRouter<T> seja gerenciado pelo AppRouter
 extension TabRouter: ManagedRouter {
+    public func dismiss() {
+        // not implemented
+    }
+    
     public func reset() {
-        // Para TabRouter, apenas definir a tab inicial (assumimos que é a primeira)
-        if let allCases = Routes.self as? any CaseIterable.Type,
-           let firstCase = allCases.allCases.first as? Routes {
-            selectedTab = firstCase
-        }
+        // not implemented
     }
     
     public var isPresenting: Bool {
